@@ -56,51 +56,60 @@ sap.ui.define(
       },
 
       createColumns: function (oTempModel, oTable) {
-        var aProperties = Object.keys(oTempModel.getData()[0]);
-        aProperties.slice(1).forEach(function (sProperty) {
-          var oColumn = new sap.m.Column({
-            width: "120px",
-            header: new sap.m.Label({ text: sProperty }),
+        var aColumns = [];
+
+        // Assuming data.results[0] has the structure of the table rows
+        Object.keys(oTempModel.getData()[0])
+          .slice(1)
+          .forEach(function (sProperty) {
+            aColumns.push(
+              new sap.ui.table.Column({
+                label: new sap.m.Label({ text: sProperty }),
+                template: new sap.m.Text({ text: "{" + sProperty + "}" }),
+                width: "120px",
+                sortProperty: sProperty,
+                filterProperty: sProperty,
+              })
+            );
           });
+
+        oTable.removeAllColumns();
+        aColumns.forEach(function (oColumn) {
           oTable.addColumn(oColumn);
         });
       },
       onSearch: function () {
         var oModel = this.getOwnerComponent().getModel();
-
         var oTable = this.byId("Table");
         var oPage = this.getView().byId("page");
 
         oTable.setBusy(true);
         oTable.removeAllColumns();
-        // oPage.removeContent(oTable);
 
         let queryFilter = this.onFilters();
 
         oModel.read("/promocionesSet", {
           filters: queryFilter,
           success: function (data) {
-            var oTempModel = new sap.ui.model.json.JSONModel(data.results);
+            if (data.results.length > 0) {
+              var oTempModel = new sap.ui.model.json.JSONModel(data.results);
 
-            this.createColumns(oTempModel, oTable);
+              this.createColumns(oTempModel, oTable);
 
-            oTable.setModel(oTempModel);
-            oTable.bindItems(
-              "/",
-              new sap.m.ColumnListItem({
-                cells: Object.keys(data.results[0])
-                  .slice(1)
-                  .map(function (sProperty) {
-                    return new sap.m.Text({ text: "{" + sProperty + "}" });
-                  }),
-              })
-            );
-            oTable.setBusy(false);
-            oPage.addContent(oTable);
+              oTable.setModel(oTempModel);
+              oTable.bindRows("/");
+
+              oTable.setBusy(false);
+              oPage.addContent(oTable);
+            } else {
+              oTable.setBusy(false);
+              MessageToast.show("No hay datos para mostrar");
+            }
           }.bind(this),
           error: function (error) {
             console.log(error);
-            MessageToast.show("No Hay data");
+            MessageToast.show("Hubo un error al realizar la busqueda");
+            oTable.setBusy(false);
           },
         });
       },

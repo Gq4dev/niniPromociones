@@ -3,42 +3,59 @@
 	xmlns:core="sap.ui.core"
 	xmlns:fb="sap.ui.comp.filterbar"
 	xmlns="sap.m"
+	  xmlns:t="sap.ui.table"
 	displayBlock="true"
+
     >
+	  <Shell>
     <Page id="page" title="{i18n>title}">
-	
-        <content />
+    
+	    <content>
+		
 		<fb:FilterBar id="filterbar" persistencyKey="myPersKey" useToolbar="false" search=".onSearch" filterChange=".onFilterChange">
 			<fb:filterGroupItems>
 				<fb:FilterGroupItem name="idOferta" label="{i18n>idOferta}" groupName="Group1" visibleInFilterBar="true">
 									<fb:control>
-										<Input
-										id="idOfertaInput"
-											name="idOferta"
-										>
-											<core:Item key="{key}" text="{name}"/>
-										</Input>
+										<Input	id="idOfertaInput"	name="idOferta"	/>
 									</fb:control>
 								</fb:FilterGroupItem>
 				<fb:FilterGroupItem name="idMaterial" label="{i18n>material}" groupName="Group1" visibleInFilterBar="true">
 									<fb:control>
-										<Input
-										id="materialInput"
-											name="material"
-										>
-											<core:Item key="{key}" text="{name}"/>
-										</Input>
+										<Input	id="materialInput"	name="material"/>
 									</fb:control>
 								</fb:FilterGroupItem>
-								<fb:FilterGroupItem groupName="G2" name="fecha" label="{i18n>dateRange}"
-					 visibleInFilterBar="true">
+								<fb:FilterGroupItem name="idGrupo" label="{i18n>Wekgr}" groupName="Group1" visibleInFilterBar="true">
+									<fb:control>
+										<Input	id="grupoInput"	name="grupo"/>
+									</fb:control>
+								</fb:FilterGroupItem>
+				<fb:FilterGroupItem name="idCentro" label="{i18n>werks}" groupName="Group1" visibleInFilterBar="true">
+						<fb:control>
+							<Input	id="centroInput" name="centro" />		
+							</fb:control>
+				</fb:FilterGroupItem>
+				<fb:FilterGroupItem name="idStatus" label="{i18n>status}" groupName="Group1" visibleInFilterBar="true">
+						<fb:control>
+							<Input	id="statusInput" name="centro" />		
+							</fb:control>
+				</fb:FilterGroupItem>
+				<fb:FilterGroupItem name="idProveedor" label="{i18n>Lifnr}" groupName="Group1" visibleInFilterBar="true">
+									<fb:control>
+										<Input	id="proveedorInput"	name="proveedor"/>
+									</fb:control>
+								</fb:FilterGroupItem>
+				<fb:FilterGroupItem groupName="G2" name="fecha" label="{i18n>dateRange}" visibleInFilterBar="true">
 					<fb:control  >
 						<DateRangeSelection  id="fechaPicker" valueFormat="dd-MM-yyyy" displayFormat="dd-MM-yyyy"
 							change="onDateChange" />
 					</fb:control>
 				</fb:FilterGroupItem>
 				</fb:filterGroupItems>
-		</fb:FilterBar>		
-		<Table id="Table" ></Table>
+		</fb:FilterBar>	
+	  	<ScrollContainer >
+		<t:Table id="Table" selectionMode="None" alternateRowColors="true" ></t:Table>
+		</ScrollContainer>
+		    </content>
     </Page>
+	</Shell>
 </mvc:View>
