@@ -70,8 +70,10 @@ sap.ui.define(
 
         var oTable = this.byId("Table");
         var oPage = this.getView().byId("page");
-       // oTable.removeAllColumns();
-       // oPage.removeContent(oTable);
+
+        oTable.setBusy(true);
+        oTable.removeAllColumns();
+        // oPage.removeContent(oTable);
 
         let queryFilter = this.onFilters();
 
@@ -93,7 +95,7 @@ sap.ui.define(
                   }),
               })
             );
-
+            oTable.setBusy(false);
             oPage.addContent(oTable);
           }.bind(this),
           error: function (error) {
