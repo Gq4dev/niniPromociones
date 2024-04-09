@@ -1,0 +1,44 @@
+<mvc:View controllerName="promociones.controller.View1"
+    xmlns:mvc="sap.ui.core.mvc"
+	xmlns:core="sap.ui.core"
+	xmlns:fb="sap.ui.comp.filterbar"
+	xmlns="sap.m"
+	displayBlock="true"
+    >
+    <Page id="page" title="{i18n>title}">
+	
+        <content />
+		<fb:FilterBar id="filterbar" persistencyKey="myPersKey" useToolbar="false" search=".onSearch" filterChange=".onFilterChange">
+			<fb:filterGroupItems>
+				<fb:FilterGroupItem name="idOferta" label="{i18n>idOferta}" groupName="Group1" visibleInFilterBar="true">
+									<fb:control>
+										<Input
+										id="idOfertaInput"
+											name="idOferta"
+										>
+											<core:Item key="{key}" text="{name}"/>
+										</Input>
+									</fb:control>
+								</fb:FilterGroupItem>
+				<fb:FilterGroupItem name="idMaterial" label="{i18n>material}" groupName="Group1" visibleInFilterBar="true">
+									<fb:control>
+										<Input
+										id="materialInput"
+											name="material"
+										>
+											<core:Item key="{key}" text="{name}"/>
+										</Input>
+									</fb:control>
+								</fb:FilterGroupItem>
+								<fb:FilterGroupItem groupName="G2" name="fecha" label="{i18n>dateRange}"
+					 visibleInFilterBar="true">
+					<fb:control  >
+						<DateRangeSelection  id="fechaPicker" valueFormat="dd-MM-yyyy" displayFormat="dd-MM-yyyy"
+							change="onDateChange" />
+					</fb:control>
+				</fb:FilterGroupItem>
+				</fb:filterGroupItems>
+		</fb:FilterBar>		
+		<Table id="Table" ></Table>
+    </Page>
+</mvc:View>
