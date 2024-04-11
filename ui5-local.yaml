@@ -32,6 +32,7 @@ server:
         backend:
           - path: /sap
             url: http://appqas.nini.com.ar:8001
+            client: "400"
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:

@@ -53,7 +53,7 @@
 				</fb:filterGroupItems>
 		</fb:FilterBar>	
 	  	<ScrollContainer >
-		<t:Table id="Table" selectionMode="None" alternateRowColors="true" ></t:Table>
+		<t:Table id="Table" selectionMode="None" alternateRowColors="true" visibleRowCount="10" ></t:Table>
 		</ScrollContainer>
 		    </content>
     </Page>

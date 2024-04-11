@@ -16,24 +16,16 @@ sap.ui.define(
       onInit: function () {},
       onFilters: function () {
         var oDataFilter = [];
-        var sPaddedValue = this.byId("idOfertaInput")
-          .getValue()
-          .padStart(36, 0);
+
+        var sOferta = this.byId("idOfertaInput").getValue().padStart(36, 0);
+        var sMaterial = this.byId("materialInput").getValue().padStart(60, 0);
 
         if (this.byId("idOfertaInput").getValue().length > 0) {
-          oDataFilter.push(
-            new Filter("ExtOfrId", FilterOperator.EQ, sPaddedValue)
-          );
+          oDataFilter.push(new Filter("ExtOfrId", FilterOperator.EQ, sOferta));
         }
 
         if (this.byId("materialInput").getValue().length > 0) {
-          oDataFilter.push(
-            new Filter(
-              "Matnr",
-              FilterOperator.EQ,
-              this.byId("materialInput").getValue()
-            )
-          );
+          oDataFilter.push(new Filter("Matnr", FilterOperator.EQ, sMaterial));
         }
         var dateFormat = sap.ui.core.format.DateFormat.getDateInstance({
           pattern: "YYYY-MM-dd",
@@ -58,13 +50,18 @@ sap.ui.define(
       createColumns: function (oTempModel, oTable) {
         var aColumns = [];
 
-        // Assuming data.results[0] has the structure of the table rows
+        var oResourceBundle = this.getView()
+          .getModel("i18n")
+          .getResourceBundle();
+
         Object.keys(oTempModel.getData()[0])
           .slice(1)
           .forEach(function (sProperty) {
             aColumns.push(
               new sap.ui.table.Column({
-                label: new sap.m.Label({ text: sProperty }),
+                label: new sap.m.Label({
+                  text: oResourceBundle.getText(sProperty),
+                }),
                 template: new sap.m.Text({ text: "{" + sProperty + "}" }),
                 width: "120px",
                 sortProperty: sProperty,
