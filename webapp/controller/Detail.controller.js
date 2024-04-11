@@ -1,7 +1,7 @@
-sap.ui.define(["sap/ui/core/mvc/Controller"], function (Controller) {
+sap.ui.define(["promociones/controller/BaseController"], function (BaseController) {
   "use strict";
 
-  return Controller.extend("promociones.controller.Detail", {
+  return BaseController.extend("promociones.controller.Detail", {
     onInit: function () {
       var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
 

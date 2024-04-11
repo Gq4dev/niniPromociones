@@ -9,7 +9,7 @@
 
     >
 	  <Shell>
-    <Page id="page" title="Detalle">
+    <Page id="page" title="Detalle" showNavButton="true" navButtonPress="onNavBack">
 	<VBox class="sapUiSmallMargin">
 			<f:SimpleForm id="info" editable="false" columnsM="2" columnsL="2" columnsXL="2" 	singleContainerFullSize="true">
 			<f:content>
