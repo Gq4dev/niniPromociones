@@ -13,7 +13,23 @@ sap.ui.define(
     "use strict";
 
     return Controller.extend("promociones.controller.View1", {
-      onInit: function () {},
+      onInit: function () {
+        var oTable = this.getView().byId("Table");
+        oTable.attachRowSelectionChange(this.onRowSelectionChange, this);
+      },
+      onRowSelectionChange: function (oEvent) {
+        var oSelectedItem = oEvent.getParameter("rowContext");
+        var oSelectedData = oSelectedItem.getObject();
+        this.navigateToDetail(oSelectedData);
+      },
+      navigateToDetail: function (oSelectedData) {
+        var oModel = this.getOwnerComponent().getModel("TempDataModel");
+        oModel.setData(oSelectedData);
+
+        console.log(oModel.getData());
+        var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+        oRouter.navTo("RouteDetail");
+      },
       onFilters: function () {
         var oDataFilter = [];
 

@@ -1,0 +1,46 @@
+<mvc:View controllerName="promociones.controller.Detail"
+    xmlns:mvc="sap.ui.core.mvc"
+	xmlns:core="sap.ui.core"
+	xmlns:fb="sap.ui.comp.filterbar"
+	xmlns:f="sap.ui.layout.form"
+	xmlns="sap.m"
+	  xmlns:t="sap.ui.table"
+	displayBlock="true"
+
+    >
+	  <Shell>
+    <Page id="page" title="Detalle">
+	<VBox class="sapUiSmallMargin">
+			<f:SimpleForm id="info" editable="false" columnsM="2" columnsL="2" columnsXL="2" 	singleContainerFullSize="true">
+			<f:content>
+			<Label text="{i18n>Matnr}" />
+	 <Text text="{TempDataModel>/Matnr}"></Text>	
+	  		<Label  textAlign="Initial" text="{i18n>Maktx}" />
+	 <Text text="{TempDataModel>/Maktx}"></Text>	   
+			<Label text="{i18n>OfrName}" />
+	 <Text text="{TempDataModel>/OfrName}"></Text>	   
+	 		<Label text="{i18n>ExtOfrId}" />
+	 <Text text="{TempDataModel>/ExtOfrId}"></Text>
+	 		<Label text="{i18n>Estilopromo}" />
+	 <Text text="{TempDataModel>/Estilopromo}"></Text>
+	 		<Label text="{i18n>Estadopmr}" />
+	 <Text text="{TempDataModel>/Estadopmr}"></Text>
+	 		<Label text="{i18n>Name1}" />
+	 <Text text="{TempDataModel>/Name1}"></Text>
+	 	 		<Label text="{i18n>Wekgr}" />
+	 <Text text="{TempDataModel>/Wekgr}"></Text>
+	 	 		<Label text="{i18n>Werks}" />
+	 <Text text="{TempDataModel>/Werks}"></Text>
+	   	 		<Label text="{i18n>Fechainiciopromo}" />
+	 <Text text="{TempDataModel>/Fechainiciopromo}"></Text>
+	  	 		<Label text="{i18n>Fechafinpromo}" />
+	 <Text text="{TempDataModel>/Fechafinpromo}"></Text>
+	
+
+</f:content>
+			</f:SimpleForm>
+	</VBox>
+   
+    </Page>
+	</Shell>
+</mvc:View>
