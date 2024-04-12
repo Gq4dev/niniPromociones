@@ -27,6 +27,26 @@ sap.ui.define(
         if (this.byId("materialInput").getValue().length > 0) {
           oDataFilter.push(new Filter("Matnr", FilterOperator.EQ, sMaterial));
         }
+
+        if (this.byId("centroInput").getValue().length > 0) {
+          oDataFilter.push(
+            new Filter(
+              "Werks",
+              FilterOperator.EQ,
+              this.byId("centroInput").getValue()
+            )
+          );
+        }
+
+        if (this.byId("grupoInput").getValue().length > 0) {
+          oDataFilter.push(
+            new Filter(
+              "Wekgr",
+              FilterOperator.EQ,
+              this.byId("grupoInput").getValue().toString()
+            )
+          );
+        }
         var dateFormat = sap.ui.core.format.DateFormat.getDateInstance({
           pattern: "YYYY-MM-dd",
         });
