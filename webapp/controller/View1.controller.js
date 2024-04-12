@@ -13,7 +13,18 @@ sap.ui.define(
     "use strict";
 
     return Controller.extend("promociones.controller.View1", {
-      onInit: function () {},
+      onInit: function () {
+        this._mFilters = {
+          "Liberados": [new Filter("Estadopmr", FilterOperator.EQ, "Liberados")],
+          "Enproceso": [new Filter("Estadopmr", FilterOperator.EQ,"En Proceso")],
+          "Fallido": [new Filter("Estadopmr", FilterOperator.EQ, "")],
+      };
+      },
+      onLiveChange: function (oEvent) {
+        var oInput = oEvent.getSource();
+        var sNewValue = oInput.getValue().toUpperCase();
+        oInput.setValue(sNewValue);
+      },
       onFilters: function () {
         var oDataFilter = [];
 
@@ -47,6 +58,15 @@ sap.ui.define(
             )
           );
         }
+        if (this.byId("statusInput").getValue().length > 0) {
+          oDataFilter.push(
+            new Filter(
+              "Estadopmr",
+              FilterOperator.EQ,
+              this.byId("statusInput").getValue().toString()
+            )
+          );
+        }
         var dateFormat = sap.ui.core.format.DateFormat.getDateInstance({
           pattern: "YYYY-MM-dd",
         });
@@ -66,7 +86,23 @@ sap.ui.define(
 
         return new Array(new Filter({ filters: oDataFilter, and: true }));
       },
+      onCreateIconFilters: function (data) {
+        var statusFilterCount = {};
+        var statusCount = new JSONModel();
+        data.forEach((item) => {
+          if (statusFilterCount.hasOwnProperty((item.Estadopmr).replace(/\s/g, ""))) {
+            statusFilterCount[item.Estadopmr.replace(/\s/g, "")]++;
+          } else {
+            // Si no está, inicializamos su contador en 1
+            statusFilterCount[item.Estadopmr.replace(/\s/g, "")] = 1;
+          }
+        });
+        statusCount.setData(statusFilterCount);
 
+        console.log(statusCount.getData());
+        this.getView().setModel(statusCount, "statusCount");
+        console.log(statusFilterCount);
+      },
       createColumns: function (oTempModel, oTable) {
         var aColumns = [];
 
@@ -99,6 +135,10 @@ sap.ui.define(
         var oModel = this.getOwnerComponent().getModel();
         var oTable = this.byId("Table");
         var oPage = this.getView().byId("page");
+        var panel = this.byId("tabFilter");
+        var filterTab = this.byId("idIconTabBar");
+        filterTab.setVisible(false);
+        panel.setCount();
 
         oTable.setBusy(true);
         oTable.removeAllColumns();
@@ -110,13 +150,16 @@ sap.ui.define(
           success: function (data) {
             if (data.results.length > 0) {
               var oTempModel = new sap.ui.model.json.JSONModel(data.results);
-
+              this.onCreateIconFilters(data.results);
               this.createColumns(oTempModel, oTable);
 
               oTable.setModel(oTempModel);
               oTable.bindRows("/");
 
+              panel.setCount("( " + data.results.length + " )");
+
               oTable.setBusy(false);
+              filterTab.setVisible(true);
               oPage.addContent(oTable);
             } else {
               oTable.setBusy(false);
@@ -130,6 +173,16 @@ sap.ui.define(
           },
         });
       },
+      onFilterSelect: function(oEvent) {
+        // Obtener el binding de las filas de la tabla
+        var oTable = this.getView().byId("Table"),
+            oBinding = oTable.getBinding("rows"),
+            sKey = oEvent.getParameter("selectedKey");
+    
+        // Filtrar las filas de la tabla según la clave seleccionada
+        oBinding.filter(this._mFilters[sKey]);
+    }
+    
     });
   }
 );

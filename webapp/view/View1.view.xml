@@ -26,7 +26,7 @@
 								</fb:FilterGroupItem>
 								<fb:FilterGroupItem name="idGrupo" label="{i18n>Wekgr}" groupName="Group1" visibleInFilterBar="true">
 									<fb:control>
-										<Input	id="grupoInput"	name="grupo"/>
+										 <Input id="grupoInput"	name="grupo" liveChange="onLiveChange" />
 									</fb:control>
 								</fb:FilterGroupItem>
 				<fb:FilterGroupItem name="idCentro" label="{i18n>werks}" groupName="Group1" visibleInFilterBar="true">
@@ -36,7 +36,7 @@
 				</fb:FilterGroupItem>
 				<fb:FilterGroupItem name="idStatus" label="{i18n>status}" groupName="Group1" visibleInFilterBar="true">
 						<fb:control>
-							<Input	id="statusInput" name="centro" />		
+							<Input	id="statusInput" name="status" />		
 							</fb:control>
 				</fb:FilterGroupItem>
 				<fb:FilterGroupItem name="idProveedor" label="{i18n>Lifnr}" groupName="Group1" visibleInFilterBar="true">
@@ -52,9 +52,38 @@
 				</fb:FilterGroupItem>
 				</fb:filterGroupItems>
 		</fb:FilterBar>	
-	  	<ScrollContainer >
-		<t:Table id="Table"  selectionMode="None" alternateRowColors="true"  fixedColumnCount="2" visibleRowCount="10" ></t:Table>
-		</ScrollContainer>
+		<IconTabBar
+		id="idIconTabBar"
+		select=".onFilterSelect"
+		class="sapUiResponsiveContentPadding"
+		visible="false">
+		<items>
+			<IconTabFilter
+			id="tabFilter"
+				showAll="true"
+				key="All" />
+			<IconTabSeparator />
+			<IconTabFilter
+				icon="sap-icon://status-positive"
+				iconColor="Positive"
+				count="{statusCount>/Liberados}"
+				text="Liberados"
+				key="Liberados" />
+			<IconTabFilter
+				icon="sap-icon://status-in-process"
+				iconColor="Critical"
+				count="{statusCount>/Enproceso}"
+				text="En Proceso"
+				key="Enproceso" />
+			<IconTabFilter
+				icon="sap-icon://status-negative"
+				iconColor="Negative"
+				count="{statusCount>/Fallido}"
+				text="Fallido"
+				key="Fallido" />
+		</items>
+		</IconTabBar>
+				<t:Table id="Table"  selectionMode="None" alternateRowColors="true"  fixedColumnCount="2" visibleRowCount="10" ></t:Table>
 		    </content>
     </Page>
 	</Shell>
