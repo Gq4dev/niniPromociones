@@ -8,10 +8,7 @@
 
     >
 	  <Shell>
-    <Page id="page" title="{i18n>title}">
-    
-	    <content>
-		
+    <Page id="page" title="{i18n>title}">	
 		<fb:FilterBar id="filterbar" persistencyKey="myPersKey" useToolbar="false" search=".onSearch" filterChange=".onFilterChange">
 			<fb:filterGroupItems>
 				<fb:FilterGroupItem name="idOferta" label="{i18n>idOferta}" groupName="Group1" visibleInFilterBar="true">
@@ -50,14 +47,20 @@
 							change="onDateChange" />
 					</fb:control>
 				</fb:FilterGroupItem>
+				<fb:FilterGroupItem   groupName="G2" name=" "  visibleInFilterBar="true" label="{i18n>cleanFilters}">
+					<fb:control >
+						<Button  class="stretch" icon="sap-icon://clear-filter" press="onCleanFilters" />
+					</fb:control>
+				</fb:FilterGroupItem>
 				</fb:filterGroupItems>
 		</fb:FilterBar>	
 		
 		<IconTabBar
 		id="idIconTabBar"
 		select=".onFilterSelect"
-		class="sapUiResponsiveContentPadding"
-		visible="false">
+		visible="false"
+		expanded="false"
+		expandable="false">
 		<items>
 			<IconTabFilter
 			id="tabFilter"
@@ -69,25 +72,33 @@
 				iconColor="Positive"
 				count="{statusCount>/Liberados}"
 				text="Liberados"
-				key="Liberados" />
+				key="Liberados"
+				visible="{= ${statusCount>/Liberados} > 0 }" />
 			<IconTabFilter
 				icon="sap-icon://status-in-process"
 				iconColor="Critical"
 				count="{statusCount>/Enproceso}"
 				text="En Proceso"
-				key="Enproceso" />
+				key="Enproceso" 
+				visible="{= ${statusCount>/Enproceso} > 0 }"/>
 			<IconTabFilter
 				icon="sap-icon://status-negative"
 				iconColor="Negative"
 				count="{statusCount>/Fallido}"
 				text="Fallido"
-				key="Fallido" />
+				key="Fallido" 
+				visible="{= ${statusCount>/Fallido} > 0 }"/>
 		</items>
 		</IconTabBar>
-				
+		<content>
+				<OverflowToolbar style="Clear" design="Transparent">
+					<ToolbarSpacer></ToolbarSpacer>
+					<Button icon="sap-icon://excel-attachment" press="onExportToExcel" />
+				</OverflowToolbar>
 				<t:Table id="Table"  selectionMode="None" fixedColumnCount="2" >
 				</t:Table>
 		    </content>
+			
     </Page>
 	</Shell>
 </mvc:View>

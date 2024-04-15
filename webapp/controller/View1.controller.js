@@ -8,6 +8,7 @@ sap.ui.define(
     "sap/ui/export/Spreadsheet",
     "sap/ui/table/library",
     "sap/ui/export/library",
+    "sap/m/MessageBox",
   ],
   /**
    * @param {typeof sap.ui.core.mvc.Controller} Controller
@@ -20,7 +21,8 @@ sap.ui.define(
     MessageToast,
     Spreadsheet,
     library,
-    exportLibrary
+    exportLibrary,
+    MessageBox
   ) {
     "use strict";
     var EdmType = exportLibrary.EdmType;
@@ -41,17 +43,19 @@ sap.ui.define(
       onFilters: function () {
         var oDataFilter = [];
 
+        //Oferta Input
         var sOferta = this.byId("idOfertaInput").getValue().padStart(36, 0);
-        var sMaterial = this.byId("materialInput").getValue().padStart(60, 0);
-
         if (this.byId("idOfertaInput").getValue().length > 0) {
           oDataFilter.push(new Filter("ExtOfrId", FilterOperator.EQ, sOferta));
         }
 
+        //Material Input
+        var sMaterial = this.byId("materialInput").getValue().padStart(60, 0);
         if (this.byId("materialInput").getValue().length > 0) {
           oDataFilter.push(new Filter("Matnr", FilterOperator.EQ, sMaterial));
         }
 
+        //Centro Input
         if (this.byId("centroInput").getValue().length > 0) {
           oDataFilter.push(
             new Filter(
@@ -62,6 +66,18 @@ sap.ui.define(
           );
         }
 
+        //Proveedor Input
+        if (this.byId("proveedorInput").getValue().length > 0) {
+          oDataFilter.push(
+            new Filter(
+              "Lifnr",
+              FilterOperator.EQ,
+              this.byId("proveedorInput").getValue()
+            )
+          );
+        }
+
+        //Grupo Input
         if (this.byId("grupoInput").getValue().length > 0) {
           oDataFilter.push(
             new Filter(
@@ -71,6 +87,8 @@ sap.ui.define(
             )
           );
         }
+
+        //Status Input
         if (this.byId("statusInput").getValue().length > 0) {
           oDataFilter.push(
             new Filter(
@@ -80,6 +98,8 @@ sap.ui.define(
             )
           );
         }
+
+        //Date Picker
         var dateFormat = sap.ui.core.format.DateFormat.getDateInstance({
           pattern: "YYYY-MM-dd",
         });
@@ -96,7 +116,6 @@ sap.ui.define(
             new Filter("Fechafinpromo", FilterOperator.LE, toDate)
           );
         }
-
         return new Array(new Filter({ filters: oDataFilter, and: true }));
       },
       onCreateIconFilters: function (data) {
@@ -108,15 +127,12 @@ sap.ui.define(
           ) {
             statusFilterCount[item.Estadopmr.replace(/\s/g, "")]++;
           } else {
-            // Si no está, inicializamos su contador en 1
             statusFilterCount[item.Estadopmr.replace(/\s/g, "")] = 1;
           }
         });
         statusCount.setData(statusFilterCount);
 
-        // console.log(statusCount.getData());
         this.getView().setModel(statusCount, "statusCount");
-        // console.log(statusFilterCount);
       },
       createColumns: function (oTempModel, oTable) {
         var aColumns = [];
@@ -146,7 +162,17 @@ sap.ui.define(
           oTable.addColumn(oColumn);
         });
       },
+      _requiredFieldsCompleted: function () {
+        return this.byId("fechaPicker").getValue().length;
+      },
       onSearch: function () {
+        this.byId("fechaPicker").focus();
+
+        if (!this._requiredFieldsCompleted()) {
+          MessageBox.error("Debe completar el campo de fecha");
+          return;
+        }
+
         var oModel = this.getOwnerComponent().getModel();
         var oTable = this.byId("Table");
         var oPage = this.getView().byId("page");
@@ -178,31 +204,43 @@ sap.ui.define(
               oPage.addContent(oTable);
             } else {
               oTable.setBusy(false);
-              MessageToast.show("No hay datos para mostrar");
+              MessageToast.show(
+                "No hay datos para mostrar en el rango seleccionado"
+              );
             }
           }.bind(this),
           error: function (error) {
-            console.log(error);
             MessageToast.show("Hubo un error al realizar la busqueda");
             oTable.setBusy(false);
           },
         });
       },
+      onCleanFilters: function () {
+        this.getView().byId("idOfertaInput").setValue(null);
+        this.getView().byId("materialInput").setValue(null);
+        this.getView().byId("centroInput").setValue(null);
+        this.getView().byId("proveedorInput").setValue(null);
+        this.getView().byId("grupoInput").setValue(null);
+        this.getView().byId("statusInput").setValue(null);
+        this.getView().byId("fechaPicker").setValue(null);
+      },
       onFilterSelect: function (oEvent) {
         // Obtener el binding de las filas de la tabla
-        var oTable = this.getView().byId("Table"),
-          oBinding = oTable.getBinding("rows"),
-          sKey = oEvent.getParameter("selectedKey");
+        var oTable = this.getView().byId("Table");
+        oBinding = oTable.getBinding("rows");
+        sKey = oEvent.getParameter("selectedKey");
 
         // Filtrar las filas de la tabla según la clave seleccionada
         oBinding.filter(this._mFilters[sKey]);
       },
       onExportToExcel: function () {
         var oTable = this.getView().byId("Table");
-
         var aColumns = oTable.getColumns();
-
         var oBinding = oTable.getBinding("rows");
+
+        if (!oBinding) {
+          return MessageBox.information("No hay informacion para exportar");
+        }
 
         var FilteredData = [];
         var array = oBinding.oList;
@@ -225,7 +263,7 @@ sap.ui.define(
         };
 
         // Iniciar exportación
-        var oSpreadsheet = new sap.ui.export.Spreadsheet(oSettings);
+        var oSpreadsheet = new Spreadsheet(oSettings);
         oSpreadsheet.build();
       },
 
