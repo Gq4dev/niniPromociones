@@ -83,6 +83,10 @@
 				key="Fallido" />
 		</items>
 		</IconTabBar>
+					<OverflowToolbar>
+					<ToolbarSpacer></ToolbarSpacer>
+					<Button icon="sap-icon://excel-attachment" press="onExportToExcel" />
+						</OverflowToolbar>
 				<t:Table id="Table"  selectionMode="None" alternateRowColors="true"  fixedColumnCount="2" visibleRowCount="10" ></t:Table>
 		    </content>
     </Page>

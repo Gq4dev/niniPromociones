@@ -5,20 +5,33 @@ sap.ui.define(
     "sap/ui/model/FilterOperator",
     "sap/ui/model/json/JSONModel",
     "sap/m/MessageToast",
+    "sap/ui/export/Spreadsheet",
+    "sap/ui/table/library",
+    "sap/ui/export/library",
   ],
   /**
    * @param {typeof sap.ui.core.mvc.Controller} Controller
    */
-  function (Controller, Filter, FilterOperator, JSONModel, MessageToast) {
+  function (
+    Controller,
+    Filter,
+    FilterOperator,
+    JSONModel,
+    MessageToast,
+    Spreadsheet,
+    library,
+    exportLibrary
+  ) {
     "use strict";
+    var EdmType = exportLibrary.EdmType;
 
     return Controller.extend("promociones.controller.View1", {
       onInit: function () {
         this._mFilters = {
-          "Liberados": [new Filter("Estadopmr", FilterOperator.EQ, "Liberados")],
-          "Enproceso": [new Filter("Estadopmr", FilterOperator.EQ,"En Proceso")],
-          "Fallido": [new Filter("Estadopmr", FilterOperator.EQ, "")],
-      };
+          Liberados: [new Filter("Estadopmr", FilterOperator.EQ, "Liberados")],
+          Enproceso: [new Filter("Estadopmr", FilterOperator.EQ, "En Proceso")],
+          Fallido: [new Filter("Estadopmr", FilterOperator.EQ, "")],
+        };
       },
       onLiveChange: function (oEvent) {
         var oInput = oEvent.getSource();
@@ -90,7 +103,9 @@ sap.ui.define(
         var statusFilterCount = {};
         var statusCount = new JSONModel();
         data.forEach((item) => {
-          if (statusFilterCount.hasOwnProperty((item.Estadopmr).replace(/\s/g, ""))) {
+          if (
+            statusFilterCount.hasOwnProperty(item.Estadopmr.replace(/\s/g, ""))
+          ) {
             statusFilterCount[item.Estadopmr.replace(/\s/g, "")]++;
           } else {
             // Si no está, inicializamos su contador en 1
@@ -99,9 +114,9 @@ sap.ui.define(
         });
         statusCount.setData(statusFilterCount);
 
-        console.log(statusCount.getData());
+        // console.log(statusCount.getData());
         this.getView().setModel(statusCount, "statusCount");
-        console.log(statusFilterCount);
+        // console.log(statusFilterCount);
       },
       createColumns: function (oTempModel, oTable) {
         var aColumns = [];
@@ -173,16 +188,61 @@ sap.ui.define(
           },
         });
       },
-      onFilterSelect: function(oEvent) {
+      onFilterSelect: function (oEvent) {
         // Obtener el binding de las filas de la tabla
         var oTable = this.getView().byId("Table"),
-            oBinding = oTable.getBinding("rows"),
-            sKey = oEvent.getParameter("selectedKey");
-    
+          oBinding = oTable.getBinding("rows"),
+          sKey = oEvent.getParameter("selectedKey");
+
         // Filtrar las filas de la tabla según la clave seleccionada
         oBinding.filter(this._mFilters[sKey]);
-    }
-    
+      },
+      onExportToExcel: function () {
+        var oTable = this.getView().byId("Table");
+        var aColumns = oTable.getColumns();
+        var aRows = oTable.getRows();
+        var aData = [];
+
+        // Obtener datos de cada fila
+        for (var i = 0; i < aRows.length; i++) {
+          var oContext = aRows[i].getBindingContext();
+      
+          if (oContext) {
+            var oRowData = oContext.getObject();
+            aData.push(oRowData);
+          } else {
+           aData.push({})
+          }
+        }
+
+        console.log(aData);
+        // Obtener configuración de columnas
+        var aCols = this.createColumnConfig(aColumns);
+
+        // Configuración de exportación
+        var oSettings = {
+          workbook: {
+            columns: aCols,
+          },
+          dataSource: aData,
+          fileName: "TablaExportada.xlsx",
+        };
+
+        // Iniciar exportación
+        var oSpreadsheet = new sap.ui.export.Spreadsheet(oSettings);
+        oSpreadsheet.build();
+      },
+
+      createColumnConfig: function (aColumns) {
+        var aCols = [];
+        aColumns.forEach(function (oColumn) {
+          aCols.push({
+            label: oColumn.getLabel().getText(),
+            property: oColumn.getTemplate().getBindingPath("text"), // Suponiendo que la plantilla tenga una propiedad "text"
+          });
+        });
+        return aCols;
+      },
     });
   }
 );
