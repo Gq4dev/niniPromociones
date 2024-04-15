@@ -199,24 +199,20 @@ sap.ui.define(
       },
       onExportToExcel: function () {
         var oTable = this.getView().byId("Table");
+
         var aColumns = oTable.getColumns();
-        var aRows = oTable.getRows();
-        var aData = [];
 
-        // Obtener datos de cada fila
-        for (var i = 0; i < aRows.length; i++) {
-          var oContext = aRows[i].getBindingContext();
-      
-          if (oContext) {
-            var oRowData = oContext.getObject();
-            aData.push(oRowData);
-          } else {
-           aData.push({})
+        var oBinding = oTable.getBinding("rows");
+
+        var FilteredData = [];
+        var array = oBinding.oList;
+
+        oBinding.aIndices.forEach(function (index) {
+          if (index >= 0 && index < array.length) {
+            FilteredData.push(array[index]);
           }
-        }
+        });
 
-        console.log(aData);
-        // Obtener configuración de columnas
         var aCols = this.createColumnConfig(aColumns);
 
         // Configuración de exportación
@@ -224,7 +220,7 @@ sap.ui.define(
           workbook: {
             columns: aCols,
           },
-          dataSource: aData,
+          dataSource: FilteredData,
           fileName: "TablaExportada.xlsx",
         };
 
